@@ -1,27 +1,32 @@
-function Alien(){
-    this.pos = createVector(0, random(50, 500));
-    this.vel = createVector(2, 0);
-    this.w = 50;
-    this.h = 40;
-    this.rw = 70;
-    this.rh = 15;
-    this.p = 100;
+class Alien extends Particle {
+    constructor() {
+        super();
 
-    this.fire = function(){
+        if (random(0, 1) > 0.5){
+            this.pos = createVector(0, random(50, 500));
+            this.vel = createVector(2, 0);
+        } else {
+            this.pos = createVector(width-1, random(50, 500));
+            this.vel = createVector(-2 ,0);
+        }
+
+        this.w = 50;
+        this.h = 40;
+        this.rw = 70;
+        this.rh = 15;
+    }
+
+    fire(){
         //aim at the ship
         var dir = p5.Vector.sub(ship.pos, this.pos);
         dir.normalize();
         //create pew
         return alienPew.push(new Flame(this.pos.x, this.pos.y, dir));
-    };
+    }
 
-    this.update = function() {
-        this.pos.add(this.vel);
-    };
-
-    this.show = function() {
+    show(){
         push();
-        noStroke;
+        noStroke();
 
         fill(128, 128, 128);
         rectMode(CENTER);
@@ -42,5 +47,4 @@ function Alien(){
 
         pop();
     }
-
 }

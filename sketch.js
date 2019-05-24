@@ -1,21 +1,17 @@
 let ship;
-let shield;
-var alien = [];
-var alienPew =[];
-var rock = [];
-var pew = [];
-var particle = [];
+let alien = [];
+let alienPew =[];
+let rock = [];
+let pew = [];
+let dust = [];
+let lives = [];
 
-var amountOfRocks = 0;
-var level = 1;
-
-var points = 0;
-
-var hiscore = 0;
-
-var lives = [];
+let amountOfRocks = 0;
+let level = 1;
+let points = 0;
 
 let myFont;
+
 function preload() {
     myFont = loadFont('assets/Aethv2.ttf');
 }
@@ -29,7 +25,6 @@ function setup(){
     textAlign(CENTER, CENTER);
 
     ship = new Ship();
-    shield = new Shield();
 
     //setup lives
     for (var n = 0; n <= ship.lives - 1; n++) {
@@ -48,7 +43,8 @@ function setup(){
 
 function draw() {
 
-    if (points % 5000 === 0 && points !== 0){
+    //this needs to be fixed (maybe put points inside ship?)
+    if (points % 500 === 0 && points !== 0){
         if (ship.lifelock === false){
             ship.lives++;
             lives.push(new Ship());
@@ -63,6 +59,17 @@ function draw() {
     if (ship.dead !== true) {
         ship.show();
         ship.update();
+        ship.edges();
+
+        //controls
+        if (keyIsDown(RIGHT_ARROW)){
+            ship.rotate(0.1)
+        } else if (keyIsDown(LEFT_ARROW)){
+            ship.rotate(-0.1)
+        }
+        if (keyIsDown(UP_ARROW)){
+            ship.move();
+        }
     }
 
     //show points
@@ -95,7 +102,7 @@ function draw() {
         //update the pews
         for (var i = pew.length - 1; i >= 0; i--) {
 
-            //if pew hits a rock, destroy rock, destroy pew, create 10 particles for explosion animation
+            //if pew hits a rock, destroy rock, destroy pew, explosion animation
             if (pew[i] && rock[j]) {
                 if (int(dist(pew[i].pos.x, pew[i].pos.y, rock[j].pos.x, rock[j].pos.y)) <= rock[j].r) {
                     handlePoints(rock[j].p);
@@ -122,19 +129,21 @@ function draw() {
     for (var x = rock.length - 1; x >= 0; x--) {
         rock[x].show();
         rock[x].update();
+        rock[x].edges();
     }
     //show the pew
     for (var y = pew.length - 1; y >= 0; y--) {
         pew[y].show();
         pew[y].update();
         if (pew[y].edges() === true){
-            pew.shift(pew[y])
+            pew.shift(pew[y]);
         }
     }
     //show the explosion
-    for (var z = particle.length - 1; z >= 0; z--) {
-        particle[z].update();
-        particle[z].show();
+    for (var z = dust.length - 1; z >= 0; z--) {
+        dust[z].update();
+        dust[z].show();
+        dust[z].edges();
     }
 
     //show alien ship
@@ -199,11 +208,11 @@ function draw() {
 }
 
 
-//explode the particles upon impact, delete them after 5 sec
+//explode into dust upon impact, delete them after 5 sec
 function explode(x, y, size){
     for(var n = 0; n <= size; n++) {
-        particle.push(new Particle(x, y));
-        setTimeout(function(){particle.shift(particle[n])}, 5000)
+        dust.push(new Dust(x, y));
+        setTimeout(function(){dust.shift(dust[n])}, 5000)
     }
 }
 
@@ -233,7 +242,7 @@ function handlePoints(pointsGained){
     ship.lifelock = false;
 }
 
-//shoot the gun, ya turkey
+//Controls
 function keyPressed() {
     if (keyCode === 32){
         pew.push(new Flame(ship.pos.x, ship.pos.y, p5.Vector.fromAngle(ship.angle)));
