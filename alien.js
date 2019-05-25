@@ -2,18 +2,19 @@ class Alien extends Particle {
     constructor() {
         super();
 
-        if (random(0, 1) > 0.5){
+        if (random(0, 1) > 0.5) {
             this.pos = createVector(0, random(50, 500));
             this.vel = createVector(2, 0);
         } else {
-            this.pos = createVector(width-1, random(50, 500));
-            this.vel = createVector(-2 ,0);
+            this.pos = createVector(width - 1, random(50, 500));
+            this.vel = createVector(-2, 0);
         }
 
         this.w = 50;
         this.h = 40;
         this.rw = 70;
         this.rh = 15;
+        this.p = 100; //points
     }
 
     fire(){

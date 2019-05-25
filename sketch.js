@@ -5,6 +5,7 @@ let rock = [];
 let pew = [];
 let dust = [];
 let lives = [];
+let powerup = [];
 
 let amountOfRocks = 0;
 let level = 1;
@@ -37,7 +38,7 @@ function setup(){
     //alien every x sec
     setInterval(function(){
         alien.push(new Alien());
-    }, 30000);
+    }, 30000)
 
 }
 
@@ -92,7 +93,7 @@ function draw() {
     for (var j = rock.length - 1; j >= 0; j--) {
 
         //crash the ship if it hits a rock
-        if (int(dist(ship.pos.x, ship.pos.y, rock[j].pos.x, rock[j].pos.y)) <= rock[j].r + 5){
+        if (int(dist(ship.pos.x, ship.pos.y, rock[j].pos.x, rock[j].pos.y)) <= rock[j].r + 7){
             if (ship.shield !== true){
                 explode(ship.pos.x, ship.pos.y, 50);
                 ship.die();
@@ -118,8 +119,10 @@ function draw() {
                 if (int(dist(pew[i].pos.x, pew[i].pos.y, alien[0].pos.x, alien[0].pos.y)) <= 50){
                     points += alien[0].p;
                     explode(alien[0].pos.x, alien[0].pos.y, 100);
+                    powerup.push(new Powerup(alien[0].pos.x, alien[0].pos.y));
                     pew.shift(pew[i]);
                     alien.shift(alien[0]);
+
                 }
             }
         }
@@ -143,7 +146,9 @@ function draw() {
     for (var z = dust.length - 1; z >= 0; z--) {
         dust[z].update();
         dust[z].show();
-        dust[z].edges();
+        if (ship.shield !== true){
+            dust[z].repulsion(ship.pos);
+        }
     }
 
     //show alien ship
@@ -173,7 +178,6 @@ function draw() {
                 explode(ship.pos.x, ship.pos.y, 25);
                 ship.die();
             }
-
         }
 
         //delete pew if goes off edge
@@ -183,11 +187,26 @@ function draw() {
 
     }
 
-    //what happens at the end of the level
+    //show power up
+    for (var u = powerup.length -1; u >= 0; u--){
+        powerup[u].show();
+        powerup[u].update();
+        powerup[u].grab(u);
+    }
+
+    startNewLevel();
+
+}
+
+function startNewLevel(){
     if (rock.length === 0){
 
         ship.pos.x = width/2;
         ship.pos.y = height/2;
+
+        for (var n = dust.length; n >= 0; n--){
+            dust.pop();
+        }
 
         clear();
         background(22);
@@ -199,13 +218,17 @@ function draw() {
         text("Press Enter to Begin!", width/2, height/2+50);
 
         if (keyCode === 13){
+
             clear();
             amountOfRocks += 2;
             level++;
             rockInit();
+
+
         }
     }
 }
+
 
 
 //explode into dust upon impact, delete them after 5 sec
@@ -220,7 +243,7 @@ function explode(x, y, size){
 function randomRockPos(range, excludeLow, excludeHigh){
     this.randomPos =  Math.floor(Math.random() * range);
     console.log(this.randomPos);
-    if (this.randomPos < excludeLow || this.random > excludeHigh){
+    if (this.randomPos < excludeLow || this.randomPos > excludeHigh){
         return this.randomPos;
     }
 
@@ -245,6 +268,17 @@ function handlePoints(pointsGained){
 //Controls
 function keyPressed() {
     if (keyCode === 32){
-        pew.push(new Flame(ship.pos.x, ship.pos.y, p5.Vector.fromAngle(ship.angle)));
+        if (ship.powerup === true){
+
+            var dir = p5.Vector.fromAngle(ship.angle);
+            var tempdir = dir;
+
+            pew.push(new Flame(ship.pos.x, ship.pos.y, p5.Vector.fromAngle(ship.angle).add(-.2)));
+            pew.push(new Flame(ship.pos.x, ship.pos.y, dir));
+            pew.push(new Flame(ship.pos.x, ship.pos.y, p5.Vector.fromAngle(ship.angle).add(.2)));
+
+        } else {
+            pew.push(new Flame(ship.pos.x, ship.pos.y, p5.Vector.fromAngle(ship.angle)));
+        }
     }
 }

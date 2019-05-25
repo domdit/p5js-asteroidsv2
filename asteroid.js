@@ -2,7 +2,8 @@ class Asteroid extends Particle {
     constructor(x, y, size) {
         super(x, y);
         this.size = size;
-        this.vel = createVector(random(-1, 1), random(-1, 1)).mult(2);
+        this.vel = p5.Vector.random2D();
+        this.vel.mult(2);
 
         //change sides, size, and velocity depending on the size of the rock
         if (this.size === 'full'){

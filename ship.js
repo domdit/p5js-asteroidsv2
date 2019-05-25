@@ -10,6 +10,8 @@ class Ship extends Particle {
         this.lifelock = false;
         this.dead = false;
         this.shield = false;
+
+        this.powerup = false;
     }
 
     move(){
@@ -32,6 +34,7 @@ class Ship extends Particle {
             }
 
             this.shield = true;
+            this.powerup = false;
             setTimeout(function(){ship.shield = false}, 3000);
             return lives.pop();
         }
