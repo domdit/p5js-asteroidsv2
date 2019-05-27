@@ -8,10 +8,10 @@ class Ship extends Particle {
 
         this.lives = 4;
         this.lifelock = false;
-        this.dead = false;
+        this.dead = true;
         this.shield = false;
 
-        this.powerup = false;
+        this.powerup = true;
     }
 
     move(){
