@@ -5,6 +5,9 @@ class Asteroid extends Particle {
         this.vel = p5.Vector.random2D();
         this.vel.mult(2);
 
+        this.tmpvel = createVector();
+
+
         //change sides, size, and velocity depending on the size of the rock
         if (this.size === 'full'){
             this.r = 50;
@@ -51,6 +54,13 @@ class Asteroid extends Particle {
         polygon(0, 0, this.r, this.s);
         pop();
     }
+
+    update(){
+        this.vel.limit(limiter);
+        this.pos.add(this.vel);
+    }
+
+
 }
 
 

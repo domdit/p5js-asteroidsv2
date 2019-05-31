@@ -10,8 +10,11 @@ class Ship extends Particle {
         this.lifelock = false;
         this.dead = true;
         this.shield = false;
+        this.specShield = false;
 
-        this.powerup = true;
+        this.powerup = false;
+
+        this.animationDegree = 0;
     }
 
     move(){
@@ -47,13 +50,15 @@ class Ship extends Particle {
         strokeWeight(2);
 
         //make ship flash when shield is on
-        if (this.shield === true){
+        if (this.shield === true && this.specShield === false){
             if (frameCount % 60 >= 30){
                 stroke(22)
             } else {
                 stroke(0,128,128);
             }
-        } else{
+        } else if (this.specShield === true && this.shield === true){
+            stroke(0, random(255), random(255));
+        } else {
             stroke(0,128,128);
         }
 
@@ -66,6 +71,11 @@ class Ship extends Particle {
         super.update();
         this.vel.mult(0.99);
         this.vel.limit(4);
+    }
+
+    rotateAnimation(){
+
+
     }
 
 }
