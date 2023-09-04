@@ -6,6 +6,14 @@ class Dust extends Particle {
         this.r = 3;
         this.acc = createVector();
     }
+    
+    display(ship) {
+        this.update();
+        this.show();
+        if (ship.shield !== true) {
+            this.repulsion(ship.pos)
+        }
+    };
 
     show() {
         fill(random(255), random(255), random(255));

@@ -6,6 +6,7 @@ class Asteroid extends Particle {
         this.vel.mult(2);
 
         this.tmpvel = createVector();
+        this.shipOffset = 7; // offset distance between ship for collision calc
 
 
         //change sides, size, and velocity depending on the size of the rock
@@ -27,6 +28,13 @@ class Asteroid extends Particle {
         }
 
     }
+    
+    display() {
+        this.show();
+        this.update();
+        this.edges();
+    };
+   
 
     //double and shrink when rock is hit... destroy if size is 'tiny'
     break() {
@@ -45,8 +53,18 @@ class Asteroid extends Particle {
             return [];
         }
     };
+    
+    getShot(entity, idx) {
+        if (int(dist(entity.pos.x, entity.pos.y, this.pos.x, this.pos.y)) <= this.r) {
+            handlePoints(this.p);
+            explode(this.pos.x, this.pos.y, 40);
+            this.break();
+            pew.shift(entity);
+            rock.splice(idx, 1);
+        }
+    }
 
-    show(){
+    show() {
         push();
         stroke(255);
         noFill();
@@ -59,8 +77,6 @@ class Asteroid extends Particle {
         this.vel.limit(limiter);
         this.pos.add(this.vel);
     }
-
-
 }
 
 

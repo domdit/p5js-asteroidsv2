@@ -12,12 +12,48 @@ class Ship extends Particle {
         this.shield = false;
         this.specShield = false;
 
-        this.powerup = false;
+        this.powerup = null;
 
         this.animationDegree = 0;
     }
+    
+    main(lives) {
+        if (lives.length === 0){
+            this.dead = true;
+        }
+        if (this.dead !== true) {
+            this.display();
+            this.handleControls();
+        }
+    }
+    
+    display() {
+        this.show();
+        this.update();
+        this.edges();
+    };
+    
+    handleCollision(entity) {
+        if (int(dist(this.pos.x, this.pos.y, entity.pos.x, entity.pos.y)) <= entity.r + entity.shipOffset) {
+            if (this.shield !== true){
+                explode(this.pos.x, this.pos.y, 50);
+                this.die();
+            }
+        }
+    };
+    
+    handleControls() {
+        if (keyIsDown(RIGHT_ARROW)){
+            this.rotate(0.1);
+        } else if (keyIsDown(LEFT_ARROW)){
+            this.rotate(-0.1);
+        }
+        if (keyIsDown(UP_ARROW)){
+            this.move();
+        }
+    }
 
-    move(){
+    move() {
         var force = p5.Vector.fromAngle(this.angle);
         this.vel.add(force);
     }
@@ -37,7 +73,7 @@ class Ship extends Particle {
             }
 
             this.shield = true;
-            this.powerup = false;
+            this.powerup = null;
             setTimeout(function(){ship.shield = false}, 3000);
             return lives.pop();
         }
@@ -72,11 +108,5 @@ class Ship extends Particle {
         this.vel.mult(0.99);
         this.vel.limit(4);
     }
-
-    rotateAnimation(){
-
-
-    }
-
 }
 

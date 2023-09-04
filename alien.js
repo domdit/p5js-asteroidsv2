@@ -16,16 +16,54 @@ class Alien extends Particle {
         this.rh = 15;
         this.p = 100; //points
     }
+    
+    main(idx) {
+        this.display();
+        
+        // destroy ship if collides with alien
+        if (int(dist(ship.pos.x, ship.pos.y, alien[idx].pos.x, alien[idx].pos.y)) <= 35){
+            if (ship.shield !== true){
+                explode(ship.pos.x, ship.pos.y, 50);
+                ship.die();
+            }
+        }
+        
+        // alien shoots on time interval
+        if (frameCount % (175 - level * 5) === 0) {
+            this.fire();
+        }
+        
+        // pop alien if it goes off screen
+        if (this.pos.x >= width){
+            alien.shift(alien[idx]);
+            frameCount = 0;
+        }
+    };
+    
+    display() {
+        this.show();
+        this.update();
+    };
 
-    fire(){
+    fire() {
         //aim at the ship
         var dir = p5.Vector.sub(ship.pos, this.pos);
         dir.normalize();
         //create pew
-        return alienPew.push(new Flame(this.pos.x, this.pos.y, dir));
+        alienPew.push(new Flame(this.pos.x, this.pos.y, dir));
     }
+    
+    getShot(entity, idx) {
+        if (int(dist(entity.pos.x, entity.pos.y, this.pos.x, this.pos.y)) <= 50) {
+            handlePoints(this.p);
+            explode(this.pos.x, this.pos.y, 100);
+            generatePowerup(idx);
+            pew.shift(entity);
+            alien.shift(alien[idx]);
+        }
+    };
 
-    show(){
+    show() {
         push();
         noStroke();
 
