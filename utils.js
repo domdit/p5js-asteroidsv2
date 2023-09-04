@@ -85,7 +85,7 @@ function usePowerUp(){
     if (ship.powerup !== null){
         //trishot powerup
         if (ship.powerup.type === 'triShot'){
-            ship.powerup.typeMap[ship.powerup.type]();
+            ship.powerup.typeMap[ship.powerup.type]['function']();
         } else {
             displayPowerUpText();
 
